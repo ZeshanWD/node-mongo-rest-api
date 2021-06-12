@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
 
-const MONGO_DB = "todo_db";
-const MONGO_HOST = "localhost";
-
 function _connect() {
-  const URI = "mongodb://"+ MONGO_HOST + "/" + MONGO_DB;
-  console.log(URI);
+  const URI = "mongodb://"+ process.env.MONGO_HOST + "/" + process.env.MONGO_DB;
   mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true }).then(
     () => {
       console.log('connection db ready to use.');
