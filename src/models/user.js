@@ -35,9 +35,9 @@ UserSchema.statics.confirmAccount = confirmAccount;
 UserSchema.statics.signup = signup;
 UserSchema.statics.sendConfirmationEmail = sendConfirmationEmail;
 UserSchema.statics.login = login;
+UserSchema.statics.findUserById = findUserById;
 
 mongoose.model('user', UserSchema, 'users');
-
 
 // static methods
 function signup(userInfo) {
@@ -124,10 +124,23 @@ function login(email, password) {
       };
       const access_token = jwt.sign(Object.assign({}, userObject), process.env.TOKEN_SECRET, {
         expiresIn: 60 * 60 * 4, // seconds
-      })
+      });
 
       return {
         access_token,
       }
     })
+}
+
+function findUserById(_id) {
+  return this.findById(_id)
+    .then(user => {
+      return {
+        _id: user._id,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      }
+    });
 }

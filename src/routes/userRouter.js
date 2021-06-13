@@ -1,5 +1,6 @@
 const express = require('express');
 const getModelByName = require('../db/getModelByName');
+const { isAuthenticated } = require('../middlewares');
 
 const router = express.Router();
 
@@ -47,5 +48,17 @@ router.post('/login', (req, res) => {
     res.status(200).send({ success: false, error: err.message });
   }
 });
+
+router.post('/current_user', isAuthenticated, (req, res) => {
+  if (!req.user) return res.status(200).send({ success: true, data: { user: null } });
+
+  const User = getModelByName('user');
+
+  return User.findUserById(req.user._id)
+    .then((user) => {
+      res.status(200).send({ success: true, data: { user } });
+    }).catch(err => res.status(200).send({ success: false, error: err.message }))
+});
+
 
 module.exports = router;
